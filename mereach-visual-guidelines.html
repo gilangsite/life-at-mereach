@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEREACH Website Guidelines</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-primary: #0F1724;
+            --text-secondary: #64748B;
+            --grid-color: rgba(15, 23, 36, 0.05);
+            --border-color: rgba(15, 23, 36, 0.1);
+            --accent-glow: rgba(15, 23, 36, 0.03);
+            --slide-width: 1920px;
+            --slide-height: 1080px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+            color: var(--text-primary);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #presentation-container {
+            width: var(--slide-width);
+            height: var(--slide-height);
+            background: var(--bg-color);
+            position: relative;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Abstract Grid Background */
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Slides */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 100px 140px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 1;
+            /* Slide effect */
+            transform: translateY(20px);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            z-index: 2;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 100px;
+            font-weight: 500;
+            letter-spacing: -3px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 56px;
+            font-weight: 500;
+            letter-spacing: -1.5px;
+            margin-bottom: 50px;
+            color: var(--text-primary);
+        }
+
+        .section-label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 5px 10px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+        }
+
+        p {
+            font-size: 28px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Lists as Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .card h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .card p,
+        .card li {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        ul {
+            list-style: none;
+            display: grid;
+            gap: 20px;
+        }
+
+        li {
+            font-size: 24px;
+            padding-left: 20px;
+            border-left: 2px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* Navigation */
+        .controls {
+            position: absolute;
+            bottom: 60px;
+            right: 80px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--border-color);
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--text-primary);
+            background: var(--text-primary);
+            color: white;
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 75px;
+            left: 140px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: var(--text-primary);
+            width: 0%;
+            transition: width 0.5s ease;
+            z-index: 20;
+        }
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="presentation-container">
+        <!-- Visual Background -->
+        <div class="bg-grid"></div>
+        <div class="bg-glow"></div>
+
+        <!-- Slide 1: Cover -->
+        <div class="slide active" id="slide-1" style="display: flex; flex-direction: column; justify-content: center;">
+            <div class="section-label">WEBSITE BLUEPRINT</div>
+            <h1>MEREACH VISUAL<br>GUIDELINES</h1>
+            <p style="margin-top: 30px;">Strategy, Structure & Visual System<br>v1.0 • 2026</p>
+        </div>
+
+        <!-- Slide 2: Purpose -->
+        <div class="slide" id="slide-2">
+            <div class="section-label">01 // PURPOSE</div>
+            <h2>Tujuan Website</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Presentasi Brand</h3>
+                    <p>Menjelaskan identitas MEREACH sebagai movement proteksi modern.</p>
+                </div>
+                <div class="card">
+                    <h3>Acquisition Engine</h3>
+                    <p>Konversi visitors menjadi Leads (Teman) & Partner.</p>
+                </div>
+                <div class="card">
+                    <h3>Community Hub</h3>
+                    <p>Pusat resource, event, dan interaksi.</p>
+                </div>
+                <div class="card">
+                    <h3>Trust & Compliance</h3>
+                    <p>Validasi lisensi Vision & Allianz + Transparansi total.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Audience -->
+        <div class="slide" id="slide-3">
+            <div class="section-label">02 // TARGET AUDIENCE</div>
+            <h2>Prioritas Audiens</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. Teman MEREACH</h3>
+                    <p>Gen-Z / Early Millennials. <br><strong>Goal:</strong> CTA Konsultasi.</p>
+                </div>
+                <div class="card">
+                    <h3>2. Partner MEREACH</h3>
+                    <p>Side-Hustlers / Calon Agen. <br><strong>Goal:</strong> Sign-up & Training.</p>
+                </div>
+                <div class="card">
+                    <h3>3. Leader</h3>
+                    <p>Community Builder. <br><strong>Goal:</strong> Scale Tim.</p>
+                </div>
+                <div class="card">
+                    <h3>4. Stakeholders</h3>
+                    <p>Vision & Allianz. <br><strong>Goal:</strong> Brand Credibility.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Sitemap -->
+        <div class="slide" id="slide-4">
+            <div class="section-label">03 // SITEMAP</div>
+            <h2>Arsitektur Informasi</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Core Structure</h3>
+                    <ul>
+                        <li>Home</li>
+                        <li>About</li>
+                        <li>Produk & Solusi</li>
+                        <li>Untuk Partner</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Community & Resources</h3>
+                    <ul>
+                        <li>Events & Stories</li>
+                        <li>Resource Library</li>
+                        <li>Partner Dash (Login)</li>
+                        <li>Legal (Privacy/Terms)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Home Page Structure -->
+        <div class="slide" id="slide-5">
+            <div class="section-label">04 // HOMEPAGE FLOW</div>
+            <h2>Content Modules (Fold → Deep)</h2>
+            <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="card">
+                    <h3>1. Hero</h3>
+                    <p>"Plan it. Own it." + Candid Visual.</p>
+                </div>
+                <div class="card">
+                    <h3>2. Value Snapshot</h3>
+                    <p>Jelas • Praktis • Community</p>
+                </div>
+                <div class="card">
+                    <h3>3. Product Teaser</h3>
+                    <p>Proteksi Dasar / Health / Unit-link</p>
+                </div>
+                <div class="card">
+                    <h3>4. Social Proof</h3>
+                    <p>Cerita klaim nyata.</p>
+                </div>
+                <div class="card">
+                    <h3>5. For Partner</h3>
+                    <p>Teaser biz opportunity.</p>
+                </div>
+                <div class="card">
+                    <h3>6. How It Works</h3>
+                    <p>Konsultasi → Pilih → Support</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Content Guide -->
+        <div class="slide" id="slide-6">
+            <div class="section-label">05 // CONTENT STRATEGY</div>
+            <h2>Page Guides</h2>
+            <ul>
+                <li><strong>About:</strong> Fokus pada transparansi & pragmatisme.</li>
+                <li><strong>Produk:</strong> Solusi ("Menutup biaya RS"), bukan jargon teknis.</li>
+                <li><strong>Partner:</strong> Highlight "30-Day Playbook" & komisi transparan.</li>
+                <li><strong>Community:</strong> Event mendatang & member spotlight.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 7: UI Guidelines -->
+        <div class="slide" id="slide-7">
+            <div class="section-label">06 // UI SYSTEM</div>
+            <h2>User Interface</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Grid & Layout</h3>
+                    <p>12-Column Grid. 1200px Content Width.</p>
+                </div>
+                <div class="card">
+                    <h3>Spacing</h3>
+                    <p>Generous White Space. 32px Base Unit.</p>
+                </div>
+                <div class="card">
+                    <h3>Motion</h3>
+                    <p>Subtle fade/slide. No heavy bounce.</p>
+                </div>
+                <div class="card">
+                    <h3>Mobile First</h3>
+                    <p>Sticky CTAs. Large Tap Targets (+44px).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Visual Identity -->
+        <div class="slide" id="slide-8">
+            <div class="section-label">07 // VISUAL IDENTITY</div>
+            <h2>Brand System</h2>
+            <div style="display: flex; gap: 40px; margin-top: 40px;">
+                <div
+                    style="flex: 1; height: 200px; background: #0F1724; padding: 20px; color: white; border-radius: 4px;">
+                    <h3>Deep Navy</h3>
+                    <p style="color: #8899A6; font-size: 14px;">#0F1724 (Primary Anchor)</p>
+                </div>
+                <div
+                    style="flex: 1; height: 200px; background: #FF6B61; padding: 20px; color: white; border-radius: 4px;">
+                    <h3>Coral</h3>
+                    <p style="color: white; font-size: 14px;">#FF6B61 (Accent CTA)</p>
+                </div>
+                <div
+                    style="flex: 1; height: 200px; background: #F7F7F8; padding: 20px; color: #0F1724; border-radius: 4px; border: 1px solid #ddd;">
+                    <h3>Warm Gray</h3>
+                    <p style="color: #666; font-size: 14px;">#F7F7F8 (Surface)</p>
+                </div>
+            </div>
+            <div style="margin-top: 40px;">
+                <div class="card" style="width: 100%;">
+                    <h3>Typography</h3>
+                    <p><strong>Heading:</strong> Poppins (Semi-Bold) &nbsp;|&nbsp; <strong>Body:</strong> Inter
+                        (Regular)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Tech Stack -->
+        <div class="slide" id="slide-9">
+            <div class="section-label">08 // TECHNOLOGY</div>
+            <h2>Recommended Stack</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Frontend</h3>
+                    <p>Next.js + Vercel</p>
+                </div>
+                <div class="card">
+                    <h3>CMS</h3>
+                    <p>Sanity / Contentful (Headless)</p>
+                </div>
+                <div class="card">
+                    <h3>CRM</h3>
+                    <p>HubSpot / Zoho Automation</p>
+                </div>
+                <div class="card">
+                    <h3>Support</h3>
+                    <p>WhatsApp Business API</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Launch Checklist -->
+        <div class="slide" id="slide-10">
+            <div class="section-label">09 // LAUNCH & METRICS</div>
+            <h2>Go-Live Readiness</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Checklist</h3>
+                    <ul>
+                        <li>Hero & CTAs live</li>
+                        <li>Forms integrated to CRM</li>
+                        <li>Privacy Policy published</li>
+                        <li>Lighthouse Score > 90</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Success Metrics</h3>
+                    <ul>
+                        <li>Conversion: 8-12%</li>
+                        <li>Response: < 10 mins</li>
+                        <li>Engagement: > 2 pages</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: End -->
+        <div class="slide" id="slide-11"
+            style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <h1>MEREACH</h1>
+            <p>Plan it. Own it.</p>
+        </div>
+
+        <!-- Navigation UI -->
+        <div class="slide-number">SLIDE <span id="curr-slide">1</span> / 11</div>
+        <div class="controls">
+            <button class="nav-btn" onclick="prevSlide()">←</button>
+            <button class="nav-btn" onclick="nextSlide()">→</button>
+        </div>
+        <div class="progress-bar" id="progress"></div>
+
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 11;
+
+        function updateUI() {
+            // Update active slide
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+            // Update numbers
+            document.getElementById('curr-slide').innerText = currentSlide;
+
+            // Update Progress
+            const pct = (currentSlide / totalSlides) * 100;
+            document.getElementById('progress').style.width = pct + '%';
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        function scalePresentation() {
+            const container = document.getElementById('presentation-container');
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            const scale = Math.min(winW / 1920, winH / 1080);
+            container.style.transform = `scale(${scale * 0.9})`;
+        }
+
+        window.addEventListener('resize', scalePresentation);
+        window.onload = scalePresentation;
+    </script>
+</body>
+
+</html>
