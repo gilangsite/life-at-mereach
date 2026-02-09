@@ -13,6 +13,8 @@ const state = {
 };
 
 // ========== DOM ELEMENTS ==========
+// ========== CONFIGURATION ==========
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-bnS4IxLivaraNFSByfV00aFubQ1ujf-jIJLFvE7RDO9ec6svLx-iAns9xdktQSCJBQ/exec'; // Replace with your Google Apps Script Web App URL
 const elements = {
     nav: document.getElementById('nav'),
 
@@ -203,8 +205,15 @@ function hideNotification() {
 
 // ========== FORM SUBMISSIONS ==========
 // Partner form submission
-elements.formPartner?.addEventListener('submit', (e) => {
+elements.formPartner?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+
+    // Change button state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Sending...';
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
@@ -212,39 +221,82 @@ elements.formPartner?.addEventListener('submit', (e) => {
     // Get checkbox values for kendaraan
     const kendaraan = formData.getAll('kendaraan');
     data.kendaraan = kendaraan.join(', ');
+    data.type = 'partner';
 
-    // Add to simulated database
-    state.registeredPartners.push({
-        email: data.email || `${data.namaPanggilan.toLowerCase()}@partner.mereach.id`, // Generate temp email
-        namaLengkap: data.namaLengkap,
-        ...data
-    });
+    try {
+        // Submit to Google Apps Script
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Apps Script requires no-cors for simple POST
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
 
-    console.log('Partner Registration:', data);
+        // Add to simulated state
+        state.registeredPartners.push({
+            email: data.email,
+            namaLengkap: data.namaLengkap,
+            ...data
+        });
 
-    // Reset form and close modal
-    e.target.reset();
-    closeModal(elements.modalPartner);
+        console.log('Partner Registration Success (Sent to Script)');
 
-    // Show Success Modal
-    setTimeout(() => openModal(elements.modalSuccess), 500);
+        // Reset form and close modal
+        e.target.reset();
+        closeModal(elements.modalPartner);
+
+        // Show Success Modal
+        setTimeout(() => openModal(elements.modalSuccess), 500);
+
+    } catch (error) {
+        console.error('Submission Error:', error);
+        showNotification('Terjadi kesalahan saat mengirim data. Silakan coba lagi.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+    }
 });
 
 // Teman form submission
-elements.formTeman?.addEventListener('submit', (e) => {
+elements.formTeman?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Submitting...';
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
+    data.type = 'teman';
 
-    console.log('Teman Registration:', data);
+    try {
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
 
-    // Show success notification
-    showNotification('Selamat datang, Teman MEREACH! Kamu sekarang bisa mengakses konten eksklusif.', 'success');
+        console.log('Teman Registration Success (Sent to Script)');
 
-    // Reset form and close modal
-    e.target.reset();
-    closeModal(elements.modalTeman);
+        // Show success notification
+        showNotification('Selamat datang, Teman MEREACH! Kamu sekarang bisa mengakses konten eksklusif.', 'success');
+
+        // Reset form and close modal
+        e.target.reset();
+        closeModal(elements.modalTeman);
+
+    } catch (error) {
+        console.error('Submission Error:', error);
+        showNotification('Terjadi kesalahan. Silakan coba lagi.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+    }
 });
 
 // Event form submission
