@@ -1,5 +1,6 @@
 /* ============================================
    MEREACH Dashboard — JavaScript
+   Uses JSONP to bypass CORS for Google Apps Script
    ============================================ */
 
 // ========== CONFIG ==========
@@ -17,6 +18,50 @@ const dashState = {
     refreshTimer: null,
     searchQuery: ''
 };
+
+// ========== JSONP HELPER ==========
+// Google Apps Script blocks fetch() due to CORS redirects.
+// JSONP injects a <script> tag instead, which bypasses CORS entirely.
+let jsonpCounter = 0;
+
+function callScript(params) {
+    return new Promise((resolve, reject) => {
+        const callbackName = '__mereach_cb_' + (++jsonpCounter) + '_' + Date.now();
+
+        // Build URL with params
+        const query = Object.entries(params)
+            .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
+            .join('&');
+        const url = SCRIPT_URL + '?' + query + '&callback=' + callbackName;
+
+        // Timeout after 15 seconds
+        const timeout = setTimeout(() => {
+            cleanup();
+            reject(new Error('Request timeout'));
+        }, 15000);
+
+        function cleanup() {
+            clearTimeout(timeout);
+            delete window[callbackName];
+            if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        // Register callback
+        window[callbackName] = function (data) {
+            cleanup();
+            resolve(data);
+        };
+
+        // Inject script tag
+        const script = document.createElement('script');
+        script.src = url;
+        script.onerror = function () {
+            cleanup();
+            reject(new Error('Network error'));
+        };
+        document.head.appendChild(script);
+    });
+}
 
 // ========== DOM REFERENCES ==========
 const $ = id => document.getElementById(id);
@@ -102,9 +147,11 @@ dom.loginForm?.addEventListener('submit', async (e) => {
     dom.loginError.textContent = '';
 
     try {
-        const url = `${SCRIPT_URL}?action=loginTeam&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`;
-        const res = await fetch(url);
-        const result = await res.json();
+        const result = await callScript({
+            action: 'loginTeam',
+            email: email,
+            password: password
+        });
 
         if (result.status === 'success') {
             sessionStorage.setItem('mereach_team', JSON.stringify({ name: result.name, email }));
@@ -113,7 +160,7 @@ dom.loginForm?.addEventListener('submit', async (e) => {
             dom.loginError.textContent = result.message || 'Login gagal. Coba lagi.';
         }
     } catch (err) {
-        dom.loginError.textContent = 'Koneksi gagal. Pastikan internet aktif.';
+        dom.loginError.textContent = 'Koneksi gagal. Pastikan internet aktif dan Apps Script sudah di-deploy.';
         console.error('Login error:', err);
     } finally {
         dom.loginBtn.disabled = false;
@@ -126,9 +173,7 @@ dom.btnLogout?.addEventListener('click', logout);
 
 // ========== DATA MODULE ==========
 async function fetchData(action) {
-    const url = `${SCRIPT_URL}?action=${action}`;
-    const res = await fetch(url);
-    const result = await res.json();
+    const result = await callScript({ action });
     if (result.status === 'success') return result.data;
     throw new Error(result.message);
 }
@@ -391,7 +436,6 @@ function renderTable() {
         dom.tableEmpty.style.display = 'none';
         dom.tableBody.innerHTML = data.map(row => {
             const status = row.Status || 'Waiting Approval';
-            const statusClass = getStatusClass(status);
             const namaCol = isPartner ? (row['Nama Panggilan'] || row['Nama Lengkap']) : row['Nama Lengkap'];
             const email = row.Email || '';
             const whatsapp = row.WhatsApp || '';
@@ -470,7 +514,7 @@ dom.tableSearch?.addEventListener('input', (e) => {
 
 // ========== ACTION HANDLERS ==========
 
-// Accept button
+// Accept button — sends acceptance email via JSONP
 function handleAccept(email, nama, type) {
     showConfirm(
         'Terima Pendaftar?',
@@ -478,17 +522,12 @@ function handleAccept(email, nama, type) {
         async () => {
             try {
                 showToast('Mengirim email penerimaan...', 'info');
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'sendAcceptanceEmail',
-                        sheetType: type,
-                        email: email,
-                        nama: nama
-                    })
+                const result = await callScript({
+                    action: 'sendAcceptanceEmail',
+                    sheetType: type,
+                    email: email,
+                    nama: nama
                 });
-                const result = await res.json();
                 if (result.status === 'success') {
                     showToast(`✅ Email berhasil dikirim ke ${nama}! Status diupdate.`, 'success');
                     await loadAllData();
@@ -514,7 +553,7 @@ function handleChat(whatsapp, nama) {
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
 }
 
-// Status change
+// Status change — via JSONP
 async function handleStatusChange(selectEl) {
     const email = selectEl.dataset.email;
     const type = selectEl.dataset.type;
@@ -522,17 +561,12 @@ async function handleStatusChange(selectEl) {
 
     try {
         showToast('Mengupdate status...', 'info');
-        const res = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'updateStatus',
-                sheetType: type,
-                email: email,
-                newStatus: newStatus
-            })
+        const result = await callScript({
+            action: 'updateStatus',
+            sheetType: type,
+            email: email,
+            newStatus: newStatus
         });
-        const result = await res.json();
         if (result.status === 'success') {
             showToast(`✅ Status berhasil diupdate ke: ${newStatus}`, 'success');
             // Update local state
