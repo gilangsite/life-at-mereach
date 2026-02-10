@@ -140,35 +140,29 @@ function logout() {
 
 dom.loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = dom.loginEmail.value.trim();
-    const password = dom.loginPassword.value;
+    const emailInput = dom.loginEmail.value.trim().toLowerCase();
+    const passwordInput = dom.loginPassword.value;
 
     dom.loginBtn.disabled = true;
     dom.loginBtn.querySelector('.login-btn-text').style.display = 'none';
     dom.loginBtn.querySelector('.login-btn-loading').style.display = '';
     dom.loginError.textContent = '';
 
-    try {
-        const result = await callScript({
-            action: 'loginTeam',
-            email: email,
-            password: password
-        });
+    // Simulate network delay for UX
+    setTimeout(() => {
+        const user = TEAM_MEMBERS.find(m => m.email === emailInput && m.password === passwordInput);
 
-        if (result.status === 'success') {
-            sessionStorage.setItem('mereach_team', JSON.stringify({ name: result.name, email }));
-            showDashboard(result.name);
+        if (user) {
+            sessionStorage.setItem('mereach_team', JSON.stringify({ name: user.name, email: user.email }));
+            showDashboard(user.name);
         } else {
-            dom.loginError.textContent = result.message || 'Login gagal. Coba lagi.';
+            dom.loginError.textContent = 'Email atau password salah.';
         }
-    } catch (err) {
-        dom.loginError.textContent = err.message || 'Koneksi gagal. Pastikan internet aktif.';
-        console.error('Login error:', err);
-    } finally {
+
         dom.loginBtn.disabled = false;
         dom.loginBtn.querySelector('.login-btn-text').style.display = '';
         dom.loginBtn.querySelector('.login-btn-loading').style.display = 'none';
-    }
+    }, 800);
 });
 
 dom.btnLogout?.addEventListener('click', logout);
