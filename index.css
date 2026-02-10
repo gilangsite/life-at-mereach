@@ -212,12 +212,12 @@ p {
 }
 
 .nav-container {
+    position: relative;
     padding: 0 var(--space-xl);
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Logo left, Menu right */
 }
 
 .nav-logo {
@@ -233,6 +233,17 @@ p {
     /* Logo becomes black/original on scroll */
 }
 
+/* Button colors when navbar is white (scrolled) */
+.nav.scrolled .nav-menu-btn {
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.nav.scrolled .nav-menu-btn.active {
+    background: var(--text-primary);
+    color: var(--white);
+}
+
 .nav-menu-btn {
     width: 44px;
     height: 44px;
@@ -243,10 +254,12 @@ p {
     align-items: center;
     gap: 6px;
     /* Spacing between lines */
-    color: var(--white);
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary-navy);
+    background: var(--white);
     transition: var(--transition-fast);
     padding: 0;
+    position: relative;
+    z-index: 1001;
 }
 
 /* Hamburger Lines */
@@ -276,25 +289,28 @@ p {
     position: absolute;
     top: calc(100% + var(--space-sm));
     right: 0;
+    /* Align with right edge of nav-container */
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-xl);
     padding: var(--space-sm);
-    min-width: 200px;
+    min-width: 220px;
     display: flex;
     flex-direction: column;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: var(--transition-base);
+    pointer-events: none;
 }
 
 .nav-dropdown.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    pointer-events: all;
 }
 
 .nav-dropdown-item {
