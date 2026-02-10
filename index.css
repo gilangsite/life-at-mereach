@@ -453,6 +453,10 @@ p {
     /* Force 1 line */
 }
 
+.mobile-break {
+    display: none;
+}
+
 /* ========== PROPOSE SECTION ========== */
 .propose {
     padding: var(--space-5xl) 0;
@@ -1114,6 +1118,14 @@ p {
 
     .kuliah-card {
         flex: 0 0 260px;
+    }
+
+    .hero-subtitle {
+        white-space: normal;
+    }
+
+    .mobile-break {
+        display: block;
     }
 }
 
