@@ -190,7 +190,7 @@ async function loadAllData() {
         updateTimestamp();
     } catch (err) {
         console.error('Data load error:', err);
-        showToast('Gagal memuat data. Coba refresh.', 'error');
+        showToast('Gagal memuat data: ' + err.message, 'error');
     } finally {
         dom.btnRefresh.classList.remove('spinning');
     }
