@@ -28,17 +28,19 @@ function callScript(params) {
     return new Promise((resolve, reject) => {
         const callbackName = '__mereach_cb_' + (++jsonpCounter) + '_' + Date.now();
 
-        // Build URL with params
+        // Build URL safely (handle existing ? in SCRIPT_URL)
         const query = Object.entries(params)
             .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v))
             .join('&');
-        const url = SCRIPT_URL + '?' + query + '&callback=' + callbackName;
 
-        // Timeout after 15 seconds
+        const separator = SCRIPT_URL.includes('?') ? '&' : '?';
+        const url = SCRIPT_URL + separator + query + '&callback=' + callbackName;
+
+        // Timeout after 20 seconds (GAS can be slow on cold starts)
         const timeout = setTimeout(() => {
             cleanup();
-            reject(new Error('Request timeout'));
-        }, 15000);
+            reject(new Error('Timeout: Server Google Apps Script tidak merespon dalam 20 detik. Coba refresh halaman.'));
+        }, 20000);
 
         function cleanup() {
             clearTimeout(timeout);
@@ -57,7 +59,7 @@ function callScript(params) {
         script.src = url;
         script.onerror = function () {
             cleanup();
-            reject(new Error('Network error'));
+            reject(new Error('Network error: Gagal menghubungi server. Pastikan URL Apps Script sudah benar dan dipublish sebagai Web App (Anyone).'));
         };
         document.head.appendChild(script);
     });
@@ -160,7 +162,7 @@ dom.loginForm?.addEventListener('submit', async (e) => {
             dom.loginError.textContent = result.message || 'Login gagal. Coba lagi.';
         }
     } catch (err) {
-        dom.loginError.textContent = 'Koneksi gagal. Pastikan internet aktif dan Apps Script sudah di-deploy.';
+        dom.loginError.textContent = err.message || 'Koneksi gagal. Pastikan internet aktif.';
         console.error('Login error:', err);
     } finally {
         dom.loginBtn.disabled = false;
