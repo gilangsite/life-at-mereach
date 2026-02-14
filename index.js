@@ -14,7 +14,7 @@ const state = {
 
 // ========== DOM ELEMENTS ==========
 // ========== CONFIGURATION ==========
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbLNXgFL7ruiOZA3b0SQDNoXTu1i6OC2N6ZaIPz5ASTj8fPGsOw1KTJZAFYn_cauQsRfQ/exec'; // Replace with your Google Apps Script Web App URL
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzun7ybIGPcN4sR71saLloMp9QwA22kGX1py-C4f5dUfTWGfBjPyqQ30lkDk8uhly7vaA/exec'; // Replace with your Google Apps Script Web App URL
 const elements = {
     nav: document.getElementById('nav'),
 

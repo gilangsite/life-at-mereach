@@ -4,7 +4,7 @@
    ============================================ */
 
 // ========== CONFIG ==========
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbLNXgFL7ruiOZA3b0SQDNoXTu1i6OC2N6ZaIPz5ASTj8fPGsOw1KTJZAFYn_cauQsRfQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzun7ybIGPcN4sR71saLloMp9QwA22kGX1py-C4f5dUfTWGfBjPyqQ30lkDk8uhly7vaA/exec';
 const REFRESH_INTERVAL = 30000; // 30 seconds
 
 // ========== STATE ==========
