@@ -11,7 +11,8 @@ const CONFIG = {
   SHEET_NAME_TEAM: 'Team MEREACH',
   NOTIFICATION_EMAIL: 'lifeatmereach@gmail.com',
   EMAIL_SUBJECT_PARTNER: 'Pendaftaran Partner MEREACH Berhasil!',
-  EMAIL_SENDER_NAME: 'MEREACH Team'
+  EMAIL_SENDER_NAME: 'MEREACH Team',
+  DASHBOARD_URL: 'https://life-at-mereach.vercel.app/dashboard.html'
 };
 
 // Check if placeholder is still used
@@ -459,25 +460,88 @@ function sendPartnerConfirmationEmail(recipientEmail, nickname) {
  */
 function sendAdminNotification(type, data) {
   const subject = `[NEW SUBMISSION] ${type} - ${data.namaLengkap}`;
-  let body = `Ada submission baru di website MEREACH!\n\n`;
-  body += `Tipe: ${type}\n`;
-  body += `-----------------------------------\n`;
-  
-  for (let key in data) {
-    if (key !== 'type') {
-      body += `${key}: ${data[key]}\n`;
-    }
-  }
-  
-  body += `-----------------------------------\n`;
-  body += `Cek Google Sheet untuk detail lengkap.`;
+  const htmlBody = buildAdminNotificationHTML(type, data);
 
   MailApp.sendEmail({
     to: CONFIG.NOTIFICATION_EMAIL,
     subject: subject,
-    body: body,
+    htmlBody: htmlBody,
     name: 'MEREACH Website Bot'
   });
+}
+
+/**
+ * Build HTML Body for Admin Notification
+ */
+function buildAdminNotificationHTML(type, data) {
+  let tableRows = '';
+  // Map internal keys to friendly labels if needed, or just capitalize
+  const labels = {
+    namaLengkap: 'Nama Lengkap',
+    namaPanggilan: 'Nama Panggilan',
+    email: 'Email',
+    usia: 'Usia',
+    whatsapp: 'WhatsApp',
+    instagram: 'Instagram',
+    tiktok: 'TikTok',
+    domisili: 'Domisili',
+    pekerjaan: 'Pekerjaan',
+    pendidikan: 'Pendidikan',
+    kendaraan: 'Kendaraan',
+    waktuProduktif: 'Waktu Produktif',
+    sumberInfo: 'Sumber Info'
+  };
+
+  for (let key in data) {
+    if (key !== 'type' && key !== 'action' && key !== 'waktuProduktifLain' && key !== 'namaTeman') {
+      let val = data[key];
+      if (key === 'waktuProduktif' && data.waktuProduktif === 'Lainnya') val = data.waktuProduktifLain;
+      if (key === 'sumberInfo' && data.sumberInfo === 'Temen') val = `Teman (${data.namaTeman})`;
+      
+      tableRows += `
+        <tr>
+          <td style="padding: 12px; border-bottom: 1px solid #edf2f7; color: #4a5568; font-size: 14px; font-weight: 600; width: 35%;">${labels[key] || key}</td>
+          <td style="padding: 12px; border-bottom: 1px solid #edf2f7; color: #2d3748; font-size: 14px;">${val || '-'}</td>
+        </tr>`;
+    }
+  }
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body { font-family: 'Inter', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #f7fafc; }
+    .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .header { background: #0F1724; padding: 30px; text-align: center; }
+    .content { padding: 40px; }
+    .btn { display: inline-block; padding: 14px 30px; background-color: #ff751f; color: #ffffff !important; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; transition: all 0.3s ease; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2 style="color: #ffffff; margin: 0; font-size: 20px;">Submission Baru Berhasil!</h2>
+      <p style="color: #ff751f; margin: 5px 0 0; font-weight: bold;">${type}</p>
+    </div>
+    <div class="content">
+      <p style="font-size: 16px; color: #4a5568;">Halo Tim MEREACH, ada pendaftar baru yang baru saja mengirimkan formulir dari website.</p>
+      
+      <table style="width: 100%; border-collapse: collapse; margin: 25px 0;">
+        ${tableRows}
+      </table>
+      
+      <div style="text-align: center; margin-top: 35px;">
+        <a href="${CONFIG.DASHBOARD_URL}" class="btn">Buka Dashboard</a>
+      </div>
+      
+      <p style="margin-top: 40px; font-size: 12px; color: #a0aec0; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
+        Notifikasi Otomatis Backend MEREACH<br>© 2026 MEREACH Official
+      </p>
+    </div>
+  </div>
+</body>
+</html>`;
 }
 /**
  * TEST SYSTEM
