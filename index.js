@@ -369,17 +369,13 @@ function initEventsCarousel() {
             carousel.style.transition = 'none';
         }
 
-        const cardWidth = allCards[0].offsetWidth; // Using offsetWidth for accuracy
-        const gap = 64; // var(--space-3xl) defined in CSS
-
-        // Center the active card
-        // translateX = (ViewportWidth / 2) - (CardWidth / 2) - (Index * (CardWidth + Gap))
-        // Essentially: CenterOffset - CurrentItemOffset
+        const currentCard = allCards[currentIndex];
+        const cardWidth = currentCard.offsetWidth;
         const viewportWidth = window.innerWidth;
-        const centerOffset = (viewportWidth / 2) - (cardWidth / 2);
-        const currentItemOffset = currentIndex * (cardWidth + gap);
+        const currentItemOffset = currentCard.offsetLeft;
 
-        const translate = centerOffset - currentItemOffset;
+        // Formula: Center point of screen - Center point of card relative to carousel container
+        const translate = (viewportWidth / 2) - (cardWidth / 2) - currentItemOffset;
         carousel.style.transform = `translateX(${translate}px)`;
 
         // Update active class

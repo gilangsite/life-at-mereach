@@ -695,8 +695,6 @@ p {
     width: 100%;
     overflow: visible;
     /* Allow parallax scaling to be visible */
-    display: flex;
-    justify-content: center;
 }
 
 .events-carousel {
