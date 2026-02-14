@@ -5,7 +5,7 @@
 
 // Configuration
 const CONFIG = {
-  SPREADSHEET_ID: '1t9DMH3tem2GCfsPuzYI3YKBOncWUaEUQjDZM5MQbUdI',
+  SPREADSHEET_ID: '1t9DMH3tem2GCfsPuzYI3YKBOncWUaEUQjDZM5MQbUdI', // <--- GANTI INI DENGAN ID SPREADSHEET KAMU!
   SHEET_NAME_PARTNER: 'Partner MEREACH',
   SHEET_NAME_TEMAN: 'Teman MEREACH',
   SHEET_NAME_TEAM: 'Team MEREACH',
@@ -14,34 +14,99 @@ const CONFIG = {
   EMAIL_SENDER_NAME: 'MEREACH Team'
 };
 
-// ========== CORS HELPER ==========
-function createJsonResponse(obj) {
+// Check if placeholder is still used
+if (CONFIG.SPREADSHEET_ID === '1t9DMH3tem2GCfsPuzYI3YKBOncWUaEUQjDZM5MQbUdI') {
+  // We'll throw an error inside the functions to be more visible
+}
+
+
+// ========== RESPONSE HELPERS ==========
+function createJsonResponse(obj, callback) {
+  if (callback) {
+    // JSONP: wraps JSON in callback function so it bypasses CORS
+    return ContentService.createTextOutput(callback + '(' + JSON.stringify(obj) + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
 /**
- * Handle GET requests — data fetching for dashboard
+ * Handle GET requests — ALL dashboard operations go through here
+ * Supports JSONP via ?callback=functionName to bypass CORS
  */
 function doGet(e) {
   const action = e.parameter.action;
+  const callback = e.parameter.callback; // JSONP callback
 
   try {
     if (action === 'getPartnerData') {
-      return createJsonResponse({ status: 'success', data: getSheetData(CONFIG.SHEET_NAME_PARTNER) });
+      return createJsonResponse({ status: 'success', data: getSheetData(CONFIG.SHEET_NAME_PARTNER) }, callback);
     }
     if (action === 'getTemanData') {
-      return createJsonResponse({ status: 'success', data: getSheetData(CONFIG.SHEET_NAME_TEMAN) });
+      return createJsonResponse({ status: 'success', data: getSheetData(CONFIG.SHEET_NAME_TEMAN) }, callback);
+    }
+    if (action === 'ping') {
+      return createJsonResponse({ status: 'success', message: 'pong' }, callback);
     }
     if (action === 'loginTeam') {
-      return handleLoginTeam(e.parameter.email, e.parameter.password);
+      return handleLoginTeamGet(e.parameter.email, e.parameter.password, callback);
+    }
+    if (action === 'updateStatus') {
+      const result = handleUpdateStatus({
+        sheetType: e.parameter.sheetType,
+        email: e.parameter.email,
+        newStatus: e.parameter.newStatus
+      });
+      // Re-wrap with callback if needed
+      if (callback) {
+        const body = JSON.parse(result.getContent());
+        return createJsonResponse(body, callback);
+      }
+      return result;
+    }
+    if (action === 'sendAcceptanceEmail') {
+      const result = handleSendAcceptanceEmail({
+        sheetType: e.parameter.sheetType,
+        email: e.parameter.email,
+        nama: e.parameter.nama
+      });
+      if (callback) {
+        const body = JSON.parse(result.getContent());
+        return createJsonResponse(body, callback);
+      }
+      return result;
     }
     // Default — health check
     return ContentService.createTextOutput("MEREACH Backend is Active! 🚀")
       .setMimeType(ContentService.MimeType.TEXT);
   } catch (error) {
-    return createJsonResponse({ status: 'error', message: error.toString() });
+    return createJsonResponse({ status: 'error', message: error.toString() }, callback);
   }
+}
+
+// Login handler for GET (with JSONP support)
+function handleLoginTeamGet(email, password, callback) {
+  if (!email || !password) {
+    return createJsonResponse({ status: 'error', message: 'Email dan password wajib diisi.' }, callback);
+  }
+
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(CONFIG.SHEET_NAME_TEAM);
+  if (!sheet) {
+    return createJsonResponse({ status: 'error', message: 'Sheet Team MEREACH tidak ditemukan.' }, callback);
+  }
+
+  const rows = sheet.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) {
+    const rowEmail = String(rows[i][1]).trim().toLowerCase();
+    const rowPass = String(rows[i][2]).trim();
+    if (rowEmail === email.trim().toLowerCase() && rowPass === password) {
+      return createJsonResponse({ status: 'success', name: String(rows[i][0]).trim() }, callback);
+    }
+  }
+
+  return createJsonResponse({ status: 'error', message: 'Email atau password salah.' }, callback);
 }
 
 /**
@@ -69,58 +134,43 @@ function doPost(e) {
   }
 }
 
-// ========== DASHBOARD: LOGIN ==========
-function handleLoginTeam(email, password) {
-  if (!email || !password) {
-    return createJsonResponse({ status: 'error', message: 'Email dan password wajib diisi.' });
-  }
 
-  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(CONFIG.SHEET_NAME_TEAM);
-  if (!sheet) {
-    return createJsonResponse({ status: 'error', message: 'Sheet Team MEREACH tidak ditemukan.' });
-  }
-
-  const rows = sheet.getDataRange().getValues();
-  // Header: Nama, Email, Password
-  for (let i = 1; i < rows.length; i++) {
-    const rowEmail = String(rows[i][1]).trim().toLowerCase();
-    const rowPass = String(rows[i][2]).trim();
-    if (rowEmail === email.trim().toLowerCase() && rowPass === password) {
-      return createJsonResponse({ status: 'success', name: String(rows[i][0]).trim() });
-    }
-  }
-
-  return createJsonResponse({ status: 'error', message: 'Email atau password salah.' });
-}
 
 // ========== DASHBOARD: FETCH SHEET DATA ==========
 function getSheetData(sheetName) {
-  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(sheetName);
-  if (!sheet) return [];
+  try {
+    const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(sheetName);
+    if (!sheet) {
+      console.error('Sheet not found: ' + sheetName);
+      return [];
+    }
 
-  const rows = sheet.getDataRange().getValues();
-  if (rows.length <= 1) return [];
+    const rows = sheet.getDataRange().getValues();
+    if (rows.length <= 1) return [];
 
-  const headers = rows[0].map(h => String(h).trim());
-  const result = [];
+    const headers = rows[0].map(h => String(h).trim());
+    const result = [];
 
-  for (let i = 1; i < rows.length; i++) {
-    const obj = {};
-    headers.forEach((header, idx) => {
-      let val = rows[i][idx];
-      // Convert Date objects to ISO strings
-      if (val instanceof Date) {
-        val = val.toISOString();
-      }
-      obj[header] = val;
-    });
-    obj._row = i + 1; // 1-based row number for updates
-    result.push(obj);
+    for (let i = 1; i < rows.length; i++) {
+      const obj = {};
+      headers.forEach((header, idx) => {
+        let val = rows[i][idx];
+        // Convert Date objects to ISO strings
+        if (val instanceof Date) {
+          val = val.toISOString();
+        }
+        obj[header] = val;
+      });
+      obj._row = i + 1; // 1-based row number for updates
+      result.push(obj);
+    }
+
+    return result;
+  } catch (err) {
+    console.error('Error in getSheetData: ' + err.toString());
+    throw new Error('Gagal membuka Spreadsheet. Pastikan SPREADSHEET_ID sudah benar dan script memiliki izin. Error: ' + err.toString());
   }
-
-  return result;
 }
 
 // ========== DASHBOARD: UPDATE STATUS ==========
@@ -479,12 +529,4 @@ function testSystem() {
     }
     return "Tes Gagal: " + errorMsg;
   }
-}
-
-/**
- * Handle GET request (optional, for browser check)
- */
-function doGet(e) {
-  return ContentService.createTextOutput("MEREACH Backend is Active! 🚀\nRun testSystem() in editor for full verification.")
-    .setMimeType(ContentService.MimeType.TEXT);
 }
