@@ -138,30 +138,28 @@ function logout() {
     dom.loginForm.reset();
 }
 
-dom.loginForm?.addEventListener('submit', async (e) => {
+dom.loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     const emailInput = dom.loginEmail.value.trim().toLowerCase();
-    const passwordInput = dom.loginPassword.value;
+    const passwordInput = dom.loginPassword.value.trim();
 
     dom.loginBtn.disabled = true;
-    dom.loginBtn.querySelector('.login-btn-text').style.display = 'none';
-    dom.loginBtn.querySelector('.login-btn-loading').style.display = '';
+    const originalBtnHTML = dom.loginBtn.innerHTML;
+    dom.loginBtn.innerHTML = 'Signing in...';
     dom.loginError.textContent = '';
 
     // Simulate network delay for UX
     setTimeout(() => {
-        const user = TEAM_MEMBERS.find(m => m.email === emailInput && m.password === passwordInput);
+        const user = TEAM_MEMBERS.find(m => m.email.toLowerCase() === emailInput && m.password === passwordInput);
 
         if (user) {
             sessionStorage.setItem('mereach_team', JSON.stringify({ name: user.name, email: user.email }));
             showDashboard(user.name);
         } else {
             dom.loginError.textContent = 'Email atau password salah.';
+            dom.loginBtn.disabled = false;
+            dom.loginBtn.innerHTML = originalBtnHTML;
         }
-
-        dom.loginBtn.disabled = false;
-        dom.loginBtn.querySelector('.login-btn-text').style.display = '';
-        dom.loginBtn.querySelector('.login-btn-loading').style.display = 'none';
     }, 800);
 });
 
