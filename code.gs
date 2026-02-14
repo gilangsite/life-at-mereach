@@ -78,6 +78,9 @@ function doGet(e) {
       }
       return result;
     }
+    if (action === 'checkEmailRegistration') {
+      return handleCheckRegistration(e.parameter.email, callback);
+    }
     // Default — health check
     return ContentService.createTextOutput("MEREACH Backend is Active!")
       .setMimeType(ContentService.MimeType.TEXT);
@@ -108,6 +111,46 @@ function handleLoginTeamGet(email, password, callback) {
   }
 
   return createJsonResponse({ status: 'error', message: 'Email atau password salah.' }, callback);
+}
+
+// Check if email exists in either Partner or Teman sheets
+function handleCheckRegistration(email, callback) {
+  if (!email) {
+    return createJsonResponse({ status: 'error', message: 'Email tidak boleh kosong.' }, callback);
+  }
+
+  const ss = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID);
+  const emailLower = email.trim().toLowerCase();
+  
+  // Check Partner Sheet
+  const partnerSheet = ss.getSheetByName(CONFIG.SHEET_NAME_PARTNER);
+  if (partnerSheet) {
+    const data = partnerSheet.getDataRange().getValues();
+    const emailColIdx = data[0].indexOf('Email');
+    if (emailColIdx !== -1) {
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][emailColIdx]).trim().toLowerCase() === emailLower) {
+          return createJsonResponse({ status: 'success', registered: true, type: 'partner', name: data[i][1] }, callback);
+        }
+      }
+    }
+  }
+
+  // Check Teman Sheet
+  const temanSheet = ss.getSheetByName(CONFIG.SHEET_NAME_TEMAN);
+  if (temanSheet) {
+    const data = temanSheet.getDataRange().getValues();
+    const emailColIdx = data[0].indexOf('Email');
+    if (emailColIdx !== -1) {
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][emailColIdx]).trim().toLowerCase() === emailLower) {
+          return createJsonResponse({ status: 'success', registered: true, type: 'teman', name: data[i][1] }, callback);
+        }
+      }
+    }
+  }
+
+  return createJsonResponse({ status: 'success', registered: false }, callback);
 }
 
 /**

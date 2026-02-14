@@ -662,6 +662,43 @@
         </div>
     </div>
 
+    <!-- Exclusive Content Login Modal -->
+    <div class="modal-overlay" id="modal-akses-konten">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Akses Konten Eksklusif</h3>
+                <button class="modal-close" id="close-akses-konten">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: var(--space-xl); color: var(--text-secondary);">
+                    Masukkan email kamu yang sudah terdaftar sebagai <strong>Partner</strong> atau <strong>Teman
+                        MEREACH</strong> untuk membuka akses.
+                </p>
+                <form id="form-verify-email" autocomplete="off">
+                    <div class="form-group">
+                        <label class="form-label">Email Terdaftar <span class="required">*</span></label>
+                        <input type="email" class="form-input" name="verify-email" id="id-verify-email"
+                            placeholder="nama@email.com" required>
+                    </div>
+                    <div id="verify-error"
+                        style="color: var(--accent-orange); font-size: 0.875rem; margin-bottom: 12px; display: none;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg form-submit" id="btn-verify-submit">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        Verifikasi Akses
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Success Modal -->
     <div class="modal-overlay" id="modal-success">
         <div class="modal success-modal">

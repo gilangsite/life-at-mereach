@@ -23,6 +23,7 @@ const elements = {
     modalTeman: document.getElementById('modal-teman'),
     modalEvent: document.getElementById('modal-event'),
     modalSuccess: document.getElementById('modal-success'),
+    modalAksesKonten: document.getElementById('modal-akses-konten'),
 
     // Modal Triggers
     btnPartner: document.getElementById('btn-partner'),
@@ -31,6 +32,7 @@ const elements = {
     closePartner: document.getElementById('close-partner'),
     closeTeman: document.getElementById('close-teman'),
     closeEvent: document.getElementById('close-event'),
+    closeAksesKonten: document.getElementById('close-akses-konten'),
 
     // Nav Dropdown
     navToggle: document.getElementById('nav-toggle'),
@@ -40,6 +42,7 @@ const elements = {
     formPartner: document.getElementById('form-partner'),
     formTeman: document.getElementById('form-teman'),
     formEvent: document.getElementById('form-event'),
+    formVerifyEmail: document.getElementById('form-verify-email'),
 
     // Conditional form fields
     sumberInfo: document.getElementById('sumber-info'),
@@ -108,6 +111,7 @@ elements.btnTeman?.addEventListener('click', () => openModal(elements.modalTeman
 elements.closePartner?.addEventListener('click', () => closeModal(elements.modalPartner));
 elements.closeTeman?.addEventListener('click', () => closeModal(elements.modalTeman));
 elements.closeEvent?.addEventListener('click', () => closeModal(elements.modalEvent));
+elements.closeAksesKonten?.addEventListener('click', () => closeModal(elements.modalAksesKonten));
 elements.btnBackHome?.addEventListener('click', () => closeModal(elements.modalSuccess));
 
 // Close modal on overlay click
@@ -506,8 +510,82 @@ document.querySelectorAll('.event-join-btn').forEach(btn => {
 // ========== KULIAH SECTION BUTTONS ==========
 document.querySelectorAll('.btn-akses').forEach(btn => {
     btn.addEventListener('click', () => {
-        openModal(elements.modalTeman);
+        openModal(elements.modalAksesKonten);
     });
+});
+
+// JSONP Helper for index.js (similar to dashboard.js)
+function callScript(params) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+        window[callbackName] = (data) => {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+
+        const queryString = Object.keys(params)
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+            .join('&');
+
+        const script = document.createElement('script');
+        script.src = `${SCRIPT_URL}?${queryString}&callback=${callbackName}`;
+        script.onerror = () => {
+            document.body.removeChild(script);
+            reject(new Error('Network Error'));
+        };
+        document.body.appendChild(script);
+    });
+}
+
+// Verify Email for Exclusive Content
+elements.formVerifyEmail?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('id-verify-email').value.trim();
+    const submitBtn = document.getElementById('btn-verify-submit');
+    const errorEl = document.getElementById('verify-error');
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Memverifikasi...';
+    errorEl.style.display = 'none';
+
+    try {
+        const result = await callScript({
+            action: 'checkEmailRegistration',
+            email: email
+        });
+
+        if (result.status === 'success' && result.registered) {
+            closeModal(elements.modalAksesKonten);
+            showNotification(`Selamat datang kembali, ${result.name}! Akses Konten Eksklusif berhasil dibuka.`, 'success');
+            // In a real app, you'd redirect or reveal the content here.
+            // For now, we'll just show success.
+        } else {
+            closeModal(elements.modalAksesKonten);
+            showNotification(
+                'Email kamu belum terdaftar sebagai Partner atau Teman MEREACH.',
+                'error',
+                [
+                    {
+                        label: 'Jadi Teman MEREACH',
+                        primary: true,
+                        onClick: () => openModal(elements.modalTeman)
+                    },
+                    {
+                        label: 'Daftar Partner',
+                        primary: false,
+                        onClick: () => openModal(elements.modalPartner)
+                    }
+                ]
+            );
+        }
+    } catch (err) {
+        errorEl.textContent = 'Gagal memverifikasi. Coba lagi.';
+        errorEl.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Verifikasi Akses';
+    }
 });
 
 // ========== TESTIMONIALS PAUSE ON HOVER ==========
