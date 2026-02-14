@@ -10,7 +10,7 @@ const CONFIG = {
   SHEET_NAME_TEMAN: 'Teman MEREACH',
   SHEET_NAME_TEAM: 'Team MEREACH',
   NOTIFICATION_EMAIL: 'lifeatmereach@gmail.com',
-  EMAIL_SUBJECT_PARTNER: 'Pendaftaran Partner MEREACH Berhasil! 🎉',
+  EMAIL_SUBJECT_PARTNER: 'Pendaftaran Partner MEREACH Berhasil!',
   EMAIL_SENDER_NAME: 'MEREACH Team'
 };
 
@@ -78,7 +78,7 @@ function doGet(e) {
       return result;
     }
     // Default — health check
-    return ContentService.createTextOutput("MEREACH Backend is Active! 🚀")
+    return ContentService.createTextOutput("MEREACH Backend is Active!")
       .setMimeType(ContentService.MimeType.TEXT);
   } catch (error) {
     return createJsonResponse({ status: 'error', message: error.toString() }, callback);

@@ -61,10 +61,11 @@
 
     /* Shadows */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    --shadow-glow: 0 0 40px rgba(255, 117, 31, 0.3);
+    --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.2), 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    --shadow-glow: 0 0 30px rgba(255, 117, 31, 0.2);
 }
 
 /* ========== RESET & BASE ========== */
@@ -151,10 +152,18 @@ p {
 }
 
 .text-gradient {
-    background: var(--gradient-orange);
+    background: linear-gradient(135deg, #ff751f 0%, #ff9149 50%, #ff751f 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: shine 5s linear infinite;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
 }
 
 .text-white {
@@ -206,9 +215,11 @@ p {
 }
 
 .nav.scrolled {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-color);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(15, 23, 36, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
 }
 
 .nav-container {
@@ -324,6 +335,7 @@ p {
 .nav-dropdown-item:hover {
     background: var(--surface-gray);
     color: var(--accent-orange);
+    padding-left: var(--space-xl);
 }
 
 /* ========== BUTTONS ========== */
@@ -348,7 +360,7 @@ p {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg), 0 8px 30px rgba(255, 117, 31, 0.4);
+    box-shadow: 0 10px 20px rgba(255, 117, 31, 0.4);
 }
 
 .btn-secondary {

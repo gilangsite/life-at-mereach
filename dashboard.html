@@ -4,94 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Dashboard — MEREACH Team</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="Favico-Orange.png">
-
-    <!-- Styles -->
+    <title>Dashboard Team — MEREACH</title>
+    <!-- Premium Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="icon" type="image/png" href="favico-orange.png">
 </head>
 
 <body>
-    <!-- ==================== LOGIN VIEW ==================== -->
+    <!-- Login View (Initially Visible if not logged in) -->
     <div class="login-container" id="login-view">
         <div class="login-card">
             <div class="login-logo">
-                <img src="mereach.png" alt="MEREACH" class="login-logo-img">
+                <img src="white-logo.png" alt="MEREACH" class="login-logo-img">
             </div>
-            <h1 class="login-title">Team Dashboard</h1>
-            <p class="login-subtitle">Masuk dengan akun Tim MEREACH</p>
+            <h1 class="login-title">Team Access</h1>
+            <p class="login-subtitle">Dashboard Internal MEREACH</p>
             <form id="login-form" autocomplete="off">
                 <div class="login-field">
                     <label class="login-label">Email</label>
-                    <input type="email" class="login-input" id="login-email" placeholder="team@mereach.id" required>
+                    <input type="email" id="login-email" class="login-input" placeholder="tim@mereach.id" required>
                 </div>
                 <div class="login-field">
                     <label class="login-label">Password</label>
-                    <input type="password" class="login-input" id="login-password" placeholder="••••••••" required>
+                    <input type="password" id="login-pass" class="login-input" placeholder="••••••••" required>
                 </div>
+                <div id="login-error" class="login-error"></div>
                 <button type="submit" class="login-btn" id="login-btn">
-                    <span class="login-btn-text">Masuk</span>
-                    <span class="login-btn-loading" style="display:none;">
-                        <svg class="spinner" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" fill="none"
-                                stroke-dasharray="31.4 31.4" stroke-linecap="round" />
-                        </svg>
-                    </span>
+                    <span>Login Internal</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 18px; height: 18px;">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                        <polyline points="10 17 15 12 10 7" />
+                        <line x1="15" y1="12" x2="3" y2="12" />
+                    </svg>
                 </button>
-                <p class="login-error" id="login-error"></p>
             </form>
-            <a href="index.html" class="login-back">← Kembali ke Website</a>
+            <a href="index.html" class="login-back">Kembali ke Website</a>
         </div>
     </div>
 
-    <!-- ==================== DASHBOARD VIEW ==================== -->
-    <div class="dashboard" id="dashboard-view" style="display:none;">
-
+    <!-- Main Dashboard View (Initially Hidden) -->
+    <div id="dashboard-view" style="display: none;">
         <!-- Top Bar -->
         <header class="topbar">
             <div class="topbar-left">
-                <img src="mereach.png" alt="MEREACH" class="topbar-logo">
+                <img src="white-logo.png" alt="MEREACH" class="topbar-logo">
                 <span class="topbar-title">Dashboard</span>
             </div>
             <div class="topbar-right">
-                <span class="topbar-user" id="topbar-user">Team</span>
+                <div class="topbar-user">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 14px; height: 14px; vertical-align: middle; margin-right: 6px;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span id="topbar-user">Tim Member</span>
+                </div>
                 <button class="topbar-logout" id="btn-logout">Logout</button>
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="main">
-            <!-- Summary Cards -->
-            <section class="summary-cards">
+            <!-- Summary Stats -->
+            <div class="summary-cards">
                 <div class="summary-card">
                     <div class="summary-card-icon partner-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                    </div>
-                    <div class="summary-card-info">
-                        <span class="summary-card-value" id="total-partner">—</span>
-                        <span class="summary-card-label">Total Partner</span>
-                    </div>
-                </div>
-                <div class="summary-card">
-                    <div class="summary-card-icon teman-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                             <circle cx="9" cy="7" r="4" />
@@ -100,7 +80,19 @@
                         </svg>
                     </div>
                     <div class="summary-card-info">
-                        <span class="summary-card-value" id="total-teman">—</span>
+                        <span class="summary-card-value" id="total-partner">0</span>
+                        <span class="summary-card-label">Total Partner</span>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-icon teman-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <div class="summary-card-info">
+                        <span class="summary-card-value" id="total-teman">0</span>
                         <span class="summary-card-label">Total Teman</span>
                     </div>
                 </div>
@@ -112,8 +104,8 @@
                         </svg>
                     </div>
                     <div class="summary-card-info">
-                        <span class="summary-card-value" id="total-pending">—</span>
-                        <span class="summary-card-label">Waiting Approval</span>
+                        <span class="summary-card-value" id="total-pending">0</span>
+                        <span class="summary-card-label">Waiting Room</span>
                     </div>
                 </div>
                 <div class="summary-card">
@@ -124,16 +116,23 @@
                         </svg>
                     </div>
                     <div class="summary-card-info">
-                        <span class="summary-card-value" id="total-approved">—</span>
-                        <span class="summary-card-label">Approved</span>
+                        <span class="summary-card-value" id="total-approved">0</span>
+                        <span class="summary-card-label">Verified Partners</span>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- Chart Section -->
             <section class="chart-section">
                 <div class="chart-header">
-                    <h2 class="chart-title">📈 Tren Pendaftar</h2>
+                    <h2 class="chart-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width: 18px; height: 18px; vertical-align: text-bottom; margin-right: 8px;">
+                            <path d="M3 3v18h18" />
+                            <path d="m19 9-5 5-4-4-3 3" />
+                        </svg>
+                        Tren Pendaftar
+                    </h2>
                     <div class="chart-controls">
                         <input type="date" class="date-input" id="date-from">
                         <span class="date-separator">—</span>
@@ -147,7 +146,7 @@
                 </div>
             </section>
 
-            <!-- Data Table Section -->
+            <!-- Table Section -->
             <section class="table-section">
                 <div class="table-header">
                     <div class="table-tabs">
@@ -155,51 +154,62 @@
                         <button class="table-tab" data-tab="teman" id="tab-teman">Teman MEREACH</button>
                     </div>
                     <div class="table-actions-bar">
-                        <input type="text" class="table-search" id="table-search" placeholder="🔍 Cari nama, email...">
+                        <input type="text" class="table-search" id="table-search" placeholder="Cari nama, email...">
                         <button class="refresh-btn" id="btn-refresh" title="Refresh Data">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="23 4 23 10 17 10" />
-                                <polyline points="1 20 1 14 7 14" />
-                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                                <path d="M21 3v5h-5" />
+                                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                                <path d="M3 21v-5h5" />
                             </svg>
                         </button>
                     </div>
                 </div>
+
                 <div class="table-container">
-                    <table class="data-table" id="data-table">
-                        <thead id="table-head"></thead>
-                        <tbody id="table-body"></tbody>
+                    <table class="data-table">
+                        <thead id="table-head">
+                            <!-- Injected by JS -->
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Injected by JS -->
+                        </tbody>
                     </table>
-                    <div class="table-empty" id="table-empty" style="display:none;">
-                        <p>Belum ada data pendaftar.</p>
+                    <div id="table-empty" class="table-empty" style="display: none;">
+                        Data tidak ditemukan atau masih kosong.
                     </div>
                 </div>
+
                 <div class="table-footer">
-                    <span class="table-count" id="table-count">0 pendaftar</span>
-                    <span class="table-updated" id="table-updated">Terakhir diupdate: —</span>
+                    <div class="table-count" id="table-count">0 pendaftar</div>
+                    <div class="table-updated" id="table-updated">Terakhir diupdate: —</div>
                 </div>
             </section>
         </main>
     </div>
 
     <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span class="toast-message" id="toast-message"></span>
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
     </div>
 
     <!-- Confirm Dialog -->
-    <div class="confirm-overlay" id="confirm-overlay" style="display:none;">
-        <div class="confirm-dialog">
+    <div id="confirm-overlay" class="confirm-overlay" style="display: none;">
+        <div class="confirm-card">
             <h3 class="confirm-title" id="confirm-title">Konfirmasi</h3>
-            <p class="confirm-message" id="confirm-message">Apakah kamu yakin?</p>
+            <div class="confirm-message" id="confirm-message">Apakah Anda yakin?</div>
             <div class="confirm-actions">
-                <button class="confirm-btn cancel" id="confirm-cancel">Batal</button>
-                <button class="confirm-btn ok" id="confirm-ok">Ya, Lanjutkan</button>
+                <button class="confirm-btn confirm-cancel" id="confirm-cancel">Batal</button>
+                <button class="confirm-btn confirm-ok" id="confirm-ok">Yakin</button>
             </div>
         </div>
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@3.3.1/cdn.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="team-auth.js"></script>
     <script src="dashboard.js"></script>
 </body>

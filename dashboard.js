@@ -73,7 +73,7 @@ const dom = {
     dashboardView: $('dashboard-view'),
     loginForm: $('login-form'),
     loginEmail: $('login-email'),
-    loginPassword: $('login-password'),
+    loginPassword: $('login-pass'),
     loginBtn: $('login-btn'),
     loginError: $('login-error'),
     topbarUser: $('topbar-user'),
@@ -451,10 +451,10 @@ function renderTable() {
                 if (col === 'Status') {
                     return `<td>
                             <select class="status-select" data-email="${escapeAttr(email)}" data-type="${dashState.activeTab}" onchange="handleStatusChange(this)">
-                                <option value="Waiting Approval" ${status === 'Waiting Approval' ? 'selected' : ''}>⏳ Waiting</option>
-                                <option value="Approved" ${status === 'Approved' ? 'selected' : ''}>✅ Approved</option>
-                                <option value="Partner Active" ${status === 'Partner Active' ? 'selected' : ''}>🔵 Active</option>
-                                <option value="Suspended" ${status === 'Suspended' ? 'selected' : ''}>🔴 Suspended</option>
+                                <option value="Waiting Approval" ${status === 'Waiting Approval' ? 'selected' : ''}>Waiting</option>
+                                <option value="Approved" ${status === 'Approved' ? 'selected' : ''}>Approved</option>
+                                <option value="Partner Active" ${status === 'Partner Active' ? 'selected' : ''}>Active</option>
+                                <option value="Suspended" ${status === 'Suspended' ? 'selected' : ''}>Suspended</option>
                             </select>
                         </td>`;
                 }
@@ -525,13 +525,13 @@ function handleAccept(email, nama, type) {
                     nama: nama
                 });
                 if (result.status === 'success') {
-                    showToast(`✅ Email berhasil dikirim ke ${nama}! Status diupdate.`, 'success');
+                    showToast(`Email berhasil dikirim ke ${nama}! Status diupdate.`, 'success');
                     await loadAllData();
                 } else {
-                    showToast('❌ Gagal: ' + result.message, 'error');
+                    showToast('Gagal: ' + result.message, 'error');
                 }
             } catch (err) {
-                showToast('❌ Koneksi gagal.', 'error');
+                showToast('Koneksi gagal.', 'error');
                 console.error(err);
             }
         }
@@ -564,18 +564,18 @@ async function handleStatusChange(selectEl) {
             newStatus: newStatus
         });
         if (result.status === 'success') {
-            showToast(`✅ Status berhasil diupdate ke: ${newStatus}`, 'success');
+            showToast(`Status berhasil diupdate ke: ${newStatus}`, 'success');
             // Update local state
             const dataset = type === 'partner' ? dashState.partnerData : dashState.temanData;
             const item = dataset.find(d => String(d.Email).toLowerCase() === email.toLowerCase());
             if (item) item.Status = newStatus;
             updateSummaryCards();
         } else {
-            showToast('❌ Gagal: ' + result.message, 'error');
+            showToast('Gagal: ' + result.message, 'error');
             await loadAllData(); // Refresh to restore correct state
         }
     } catch (err) {
-        showToast('❌ Koneksi gagal.', 'error');
+        showToast('Koneksi gagal.', 'error');
         console.error(err);
     }
 }
