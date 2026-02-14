@@ -126,15 +126,19 @@ h6 {
     font-weight: var(--font-weight-semibold);
     line-height: 1.2;
     letter-spacing: -0.02em;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    /* Subtle depth for all headings */
 }
 
 h1 {
     font-size: clamp(2.5rem, 5vw, 4.5rem);
     font-weight: var(--font-weight-bold);
+    letter-spacing: -0.04em;
 }
 
 h2 {
     font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.03em;
 }
 
 h3 {
@@ -158,6 +162,7 @@ p {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: shine 5s linear infinite;
+    filter: drop-shadow(0 4px 8px rgba(255, 117, 31, 0.2));
 }
 
 @keyframes shine {
@@ -169,6 +174,11 @@ p {
 .text-white {
     color: var(--white) !important;
     -webkit-text-fill-color: var(--white) !important;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hero-title .text-white {
+    text-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* ========== LAYOUT ========== */
@@ -192,14 +202,15 @@ p {
 .section-label {
     display: inline-block;
     font-size: 0.75rem;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     color: var(--accent-orange);
     padding: var(--space-sm) var(--space-md);
     background: var(--accent-orange-glow);
     border-radius: var(--border-radius-full);
     margin-bottom: var(--space-md);
+    text-shadow: 0 2px 4px rgba(255, 117, 31, 0.1);
 }
 
 /* ========== NAVIGATION ========== */
@@ -748,6 +759,8 @@ p {
     font-size: 2.5rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    font-weight: var(--font-weight-bold);
 }
 
 .event-join-btn {
