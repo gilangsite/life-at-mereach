@@ -46,7 +46,7 @@ export default function Home() {
           <div className={`nav-dropdown ${isMenuOpen ? "active" : ""}`}>
             <a href="#propose" className="nav-dropdown-item">Teman MEREACH</a>
             <a href="#propose" className="nav-dropdown-item">Partner MEREACH</a>
-            <a href="#events" className="nav-dropdown-item">Event Terdekat</a>
+            <Link href="/event/warisan-berkah" className="nav-dropdown-item">Event Terdekat 🎟️</Link>
             <a href="#kuliah" className="nav-dropdown-item">Kuliah di MEREACH</a>
             <div style={{ borderTop: "1px solid rgba(0,0,0,0.05)", margin: "8px 0" }}></div>
             <Link
