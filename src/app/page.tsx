@@ -98,6 +98,47 @@ export default function Home() {
         </div>
       </section>
 
+      {/* What's Interesting Section */}
+      <section className="events section" id="events">
+        <div className="container">
+          <div className="section-header">
+            <span className="section-label">Upcoming</span>
+            <h2 className="text-primary-navy">What’s something exciting coming up soon?</h2>
+          </div>
+        </div>
+        <div className="events-carousel-wrapper">
+          <div className="events-carousel">
+            {/* Banner 1: Warisan Berkah */}
+            <Link href="/event/warisan-berkah" className="event-card active">
+              <div className="event-card-image-wrapper">
+                <img
+                  src="/poster-webinar.png"
+                  alt="Warisan Berkah"
+                  className="event-card-img"
+                />
+              </div>
+              <div className="event-card-overlay">
+                <h3 className="event-card-title">Warisan Berkah</h3>
+                <span className="event-join-btn">Daftar Sekarang</span>
+              </div>
+            </Link>
+
+            {/* Banner 2: Coming Soon */}
+            <div className="event-card">
+              <div className="event-card-image-wrapper">
+                <div className="event-card-placeholder">
+                  <span className="text-4xl">⏳</span>
+                </div>
+              </div>
+              <div className="event-card-overlay">
+                <h3 className="event-card-title">Coming Soon</h3>
+                <span className="event-join-btn opacity-50 cursor-not-allowed">Join Event</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Auth Modal Integration - Concept Link */}
       <div className="text-center p-8 bg-surface-gray">
         <p className="text-secondary mb-4">Sistem Authentikasi Baru Sedang Dipersiapkan</p>
