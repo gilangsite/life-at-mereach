@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Warisan Berkah - MEREACH Event</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --orange: #ff751f;
+            --navy: #0F1724;
+            --surface: #F7F7F8;
+            --border: rgba(15, 23, 36, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--navy);
+            background: #fff;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            z-index: 100;
+            background: rgba(15, 23, 36, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            justify-content: space-between;
+        }
+
+        nav img {
+            height: 28px;
+            filter: brightness(0) invert(1);
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        nav a:hover {
+            color: #fff;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #0F1724 0%, #1a2a1a 50%, #0a1a0a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            padding: 100px 24px 60px;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 10% 40%, rgba(255, 117, 31, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 90% 60%, rgba(34, 197, 94, 0.08) 0%, transparent 45%);
+        }
+
+        .poster-wrap {
+            position: relative;
+            z-index: 2;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+        }
+
+        .poster-wrap img {
+            width: 300px;
+            display: block;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 2;
+            max-width: 520px;
+            color: #fff;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 117, 31, 0.2);
+            border: 1px solid rgba(255, 117, 31, 0.4);
+            border-radius: 999px;
+            padding: 6px 16px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #ff9149;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #ffd4b2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .meta-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* MAIN */
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+        }
+
+        /* BENEFIT */
+        .section-title {
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 20px;
+        }
+
+        .ticket-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--orange), #ff9149);
+            color: #fff;
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(255, 117, 31, 0.3);
+        }
+
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .benefit-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+        }
+
+        .benefit-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .benefit-text {
+            font-size: 0.86rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .bonus-banner {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a2a3a 100%);
+            border-radius: 14px;
+            padding: 20px 24px;
+            color: #fff;
+            border: 1px solid rgba(255, 117, 31, 0.2);
+            margin-bottom: 48px;
+        }
+
+        .bonus-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            color: #ff9149;
+        }
+
+        /* FORM */
+        .form-section {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 36px;
+            border: 1px solid var(--border);
+        }
+
+        .form-subtitle {
+            font-size: 0.9rem;
+            color: #64748B;
+            margin-bottom: 28px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--navy);
+        }
+
+        input,
+        select {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            font-size: 1rem;
+            font-family: inherit;
+            background: #fff;
+            color: var(--navy);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--orange);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--orange), #ff9149);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 24px rgba(255, 117, 31, 0.35);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 117, 31, 0.45);
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.875rem;
+            background: #fef2f2;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        #referral-group {
+            display: none;
+        }
+
+        /* PAYMENT MODAL */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 440px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px 0;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #64748B;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-body {
+            padding: 20px 24px 28px;
+        }
+
+        .amount-banner {
+            background: linear-gradient(135deg, var(--orange), #ff9149);
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .amount-big {
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .rek-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .rek-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+
+        .rek-row+.rek-row {
+            border-top: 1px solid var(--border);
+        }
+
+        .rek-label {
+            font-size: 0.8rem;
+            color: #64748B;
+        }
+
+        .rek-value {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .copy-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .upload-label-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            color: #94A3B8;
+        }
+
+        .dropzone:hover {
+            border-color: var(--orange);
+        }
+
+        .dropzone-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--navy);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background 0.2s;
+        }
+
+        .confirm-btn:hover {
+            background: #1a2b3c;
+        }
+
+        .confirm-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-note {
+            font-size: 0.78rem;
+            color: #94A3B8;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* SUCCESS */
+        #success-page {
+            display: none;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(160deg, var(--navy) 0%, #1a2a1a 50%, #0a1a0a 100%);
+        }
+
+        .success-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .success-sub {
+            color: #64748B;
+            margin-bottom: 20px;
+        }
+
+        .success-info {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: left;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--orange), #ff9149);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 32px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        footer img {
+            height: 28px;
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #94A3B8;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Hidden file input -->
+    <input type="file" id="file-input" accept="image/*,application/pdf" style="display:none">
+
+    <!-- Navigation -->
+    <nav>
+        <img src="../mereach.png" alt="MEREACH">
+        <a href="../index.html">← Beranda</a>
+    </nav>
+
+    <!-- Main Page -->
+    <div id="main-page">
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="poster-wrap">
+                <img src="../poster-webinar.png" alt="Warisan Berkah">
+            </div>
+            <div class="hero-text">
+                <div class="badge">🕌 Ngabuburit Edition</div>
+                <h1>Warisan Berkah</h1>
+                <p class="subtitle">Ngabuburit Asuransi Syariah Untuk Masa Depan Keluarga</p>
+                <div class="meta-list">
+                    <div class="meta-item"><span>📍</span><span>Sudirman 7.8, Jl. Jenderal Sudirman No.Kav. 7-8, Jakarta
+                            10220</span></div>
+                    <div class="meta-item"><span>📅</span><span>Selasa, 10 Maret 2026</span></div>
+                    <div class="meta-item"><span>⏰</span><span>16.00 WIB – Menjelang Magrib</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="main">
+
+            <!-- Benefits -->
+            <section style="margin-bottom: 48px;">
+                <h2 class="section-title">🎁 Benefit Peserta — Ngabuburit Edition</h2>
+                <div class="ticket-badge">💰 Harga Tiket: <strong>Rp 50.000</strong></div>
+                <div class="benefit-grid">
+                    <div class="benefit-card"><span class="benefit-icon">🍽️</span><span class="benefit-text">Konsumsi
+                            Berbuka Puasa Bersama</span></div>
+                    <div class="benefit-card"><span class="benefit-icon">🕌</span><span class="benefit-text">Ceramah
+                            Ustadz Devin Halim Wijaya</span></div>
+                    <div class="benefit-card"><span class="benefit-icon">👨‍💼</span><span
+                            class="benefit-text">Konsultasi Finansial Personal GRATIS</span></div>
+                    <div class="benefit-card"><span class="benefit-icon">🎁</span><span class="benefit-text">Goodie Bag
+                            + E-book + Merchandise Allianz</span></div>
+                    <div class="benefit-card"><span class="benefit-icon">📜</span><span class="benefit-text">Certificate
+                            Kehadiran</span></div>
+                </div>
+                <div class="bonus-banner">
+                    <div class="bonus-title">🔥 BONUS untuk yang Submit Aplikasi</div>
+                    <div>💰 <strong>Diskon 10%</strong> dari kontribusi bulan pertama asuransi syariah</div>
+                </div>
+            </section>
+
+            <!-- Registration Form -->
+            <div class="form-section">
+                <h2 class="section-title">📋 Form Pendaftaran</h2>
+                <p class="form-subtitle">Isi data berikut untuk mendaftar. Konfirmasi akan dikirim ke email kamu.</p>
+
+                <form id="reg-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f-nama">Nama Lengkap *</label>
+                            <input id="f-nama" name="nama" type="text" placeholder="Contoh: Ahmad Fauzi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="f-email">Email *</label>
+                            <input id="f-email" name="email" type="email" placeholder="email@kamu.com" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f-wa">No. WhatsApp *</label>
+                            <input id="f-wa" name="whatsapp" type="tel" placeholder="081234567890" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="f-domisili">Domisili *</label>
+                            <input id="f-domisili" name="domisili" type="text" placeholder="Contoh: Jakarta Selatan"
+                                required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f-status">Status *</label>
+                            <select id="f-status" name="status" required>
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Sudah Berkeluarga">Sudah Berkeluarga</option>
+                                <option value="Belum Berkeluarga">Belum Berkeluarga</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="f-pekerjaan">Pekerjaan *</label>
+                            <input id="f-pekerjaan" name="pekerjaan" type="text" placeholder="Contoh: Karyawan Swasta"
+                                required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="f-income">Income / Penghasilan *</label>
+                            <select id="f-income" name="income" required>
+                                <option value="">-- Pilih Rentang --</option>
+                                <option value="< 10 Juta">&lt; 10 Juta</option>
+                                <option value="10-20 Juta">10 – 20 Juta</option>
+                                <option value="> 20 Juta">&gt; 20 Juta</option>
+                                <option value="Tidak Menjawab">Tidak Menjawab</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="f-sumber">Mengetahui Info dari *</label>
+                            <select id="f-sumber" name="sumber" required>
+                                <option value="">-- Pilih Sumber --</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="TikTok">TikTok</option>
+                                <option value="Referral">Referral (diundang seseorang)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="referral-group">
+                        <label for="f-referral">Nama Pengundang *</label>
+                        <input id="f-referral" name="namaReferral" type="text" placeholder="Siapa yang mengundangmu?">
+                    </div>
+
+                    <div id="form-error" class="error-msg"></div>
+                    <button type="submit" class="submit-btn">🎟️ Daftar Event — Rp 50.000</button>
+                </form>
+            </div>
+        </div>
+
+        <footer>
+            <img src="../mereach.png" alt="MEREACH">
+            <p>© 2026 MEREACH. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal-backdrop" id="payment-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">💳 Pembayaran Tiket</h2>
+                <button class="modal-close" id="close-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="amount-banner">
+                    <span>Harga Tiket</span>
+                    <span class="amount-big">Rp 50.000</span>
+                </div>
+
+                <p style="font-size:0.88rem; color:#64748B; margin-bottom:14px;">Silakan transfer ke rekening berikut:
+                </p>
+
+                <div class="rek-card">
+                    <div class="rek-row">
+                        <span class="rek-label">Bank</span>
+                        <span class="rek-value">Bank BCA</span>
+                    </div>
+                    <div class="rek-row">
+                        <span class="rek-label">No. Rekening</span>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <span class="rek-value" style="letter-spacing:2px;">715 084 2829</span>
+                            <button class="copy-btn" onclick="copyRek()">📋 Salin</button>
+                        </div>
+                    </div>
+                    <div class="rek-row">
+                        <span class="rek-label">Atas Nama</span>
+                        <span class="rek-value">Annisa Rahmalia Agustina</span>
+                    </div>
+                </div>
+
+                <p class="upload-label-text">📸 Upload Bukti Transfer <span style="color:#ef4444">*</span></p>
+                <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+                    <div class="dropzone-icon">📁</div>
+                    <p style="font-size:0.88rem;">Klik atau drag foto bukti transfer</p>
+                    <p style="font-size:0.75rem; margin-top:4px;">JPG, PNG, PDF — maks. 5MB</p>
+                </div>
+
+                <div id="modal-error" class="error-msg"></div>
+                <button class="confirm-btn" id="confirm-btn" onclick="handleConfirm()">✅ Konfirmasi Pendaftaran</button>
+                <p class="modal-note">Setelah konfirmasi, undangan & detail event akan dikirim ke email kamu.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="success-page"
+        style="display:none; min-height:100vh; align-items:center; justify-content:center; background:linear-gradient(160deg,#0F1724 0%,#1a2a1a 50%,#0a1a0a 100%);">
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            <div class="success-title">Pendaftaran Berhasil!</div>
+            <p class="success-sub">Terima kasih telah mendaftar, <strong id="success-name"></strong>!</p>
+            <div class="success-info">
+                <p>📅 <strong>Selasa, 10 Maret 2026</strong></p>
+                <p>⏰ <strong>16.00 WIB – Menjelang Magrib</strong></p>
+                <p>📍 <strong>Sudirman 7.8, Jakarta</strong></p>
+            </div>
+            <p style="font-size:0.85rem; color:#64748B; margin-bottom:16px;">
+                Email konfirmasi dan undangan dikirim ke <strong id="success-email"></strong>. Cek inbox atau spam ya!
+            </p>
+            <a href="../index.html" class="back-btn">← Kembali ke Beranda</a>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ Ganti dengan URL Google Apps Script yang sudah di-deploy
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+
+        let proofFile = null;
+        let formValues = {};
+
+        // Toggle referral field
+        document.getElementById('f-sumber').addEventListener('change', function () {
+            document.getElementById('referral-group').style.display = this.value === 'Referral' ? 'block' : 'none';
+        });
+
+        // Form submit → open modal
+        document.getElementById('reg-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const fields = ['nama', 'email', 'whatsapp', 'domisili', 'status', 'pekerjaan', 'income', 'sumber'];
+            for (const f of fields) {
+                if (!document.getElementById('f-' + f)?.value && !document.querySelector('[name=' + f + ']')?.value) {
+                    const input = document.querySelector('[name="' + f + '"]');
+                    if (input && !input.value) {
+                        showFormError('Mohon lengkapi semua field yang wajib diisi.');
+                        return;
+                    }
+                }
+            }
+            if (document.getElementById('f-sumber').value === 'Referral' && !document.getElementById('f-referral').value) {
+                showFormError('Mohon isi nama pengundang.');
+                return;
+            }
+            // Collect form data
+            formValues = {
+                nama: document.getElementById('f-nama').value,
+                email: document.getElementById('f-email').value,
+                whatsapp: document.getElementById('f-wa').value,
+                domisili: document.getElementById('f-domisili').value,
+                status: document.getElementById('f-status').value,
+                pekerjaan: document.getElementById('f-pekerjaan').value,
+                income: document.getElementById('f-income').value,
+                sumber: document.getElementById('f-sumber').value,
+                namaReferral: document.getElementById('f-referral').value || '',
+            };
+            document.getElementById('form-error').style.display = 'none';
+            document.getElementById('payment-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // File input
+        document.getElementById('file-input').addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) { showModalError('Ukuran file maksimal 5MB.'); return; }
+            proofFile = file;
+            const dropzone = document.getElementById('dropzone');
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                dropzone.innerHTML = '<img src="' + e.target.result + '" class="preview-img" alt="preview"><p style="font-size:0.78rem; color:#64748B; margin-top:6px;">' + file.name + '</p>';
+            };
+            reader.readAsDataURL(file);
+            document.getElementById('modal-error').style.display = 'none';
+        });
+
+        // Close modal
+        document.getElementById('close-modal').onclick = function () {
+            document.getElementById('payment-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        // Copy rek
+        function copyRek() {
+            navigator.clipboard.writeText('71508428229');
+            event.target.textContent = '✅ Disalin!';
+            setTimeout(() => event.target.textContent = '📋 Salin', 2000);
+        }
+
+        // Confirm submit
+        async function handleConfirm() {
+            if (!proofFile) { showModalError('Mohon upload bukti transfer terlebih dahulu.'); return; }
+            const btn = document.getElementById('confirm-btn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Mengirim Data...';
+            try {
+                const base64 = await toBase64(proofFile);
+                const payload = {
+                    ...formValues,
+                    fileName: proofFile.name,
+                    fileType: proofFile.type,
+                    fileBase64: base64,
+                    eventNama: 'Warisan Berkah: Ngabuburit Asuransi Syariah Untuk Masa Depan Keluarga',
+                    eventTempat: 'Sudirman 7.8, Jl. Jenderal Sudirman No.Kav. 7-8, Jakarta 10220',
+                    eventHari: 'Selasa, 10 Maret 2026',
+                    eventWaktu: '16.00 WIB – Menjelang Magrib',
+                };
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors'
+                });
+                // Show success
+                document.getElementById('payment-modal').classList.remove('active');
+                document.getElementById('main-page').style.display = 'none';
+                const sp = document.getElementById('success-page');
+                sp.style.display = 'flex';
+                document.getElementById('success-name').textContent = formValues.nama;
+                document.getElementById('success-email').textContent = formValues.email;
+            } catch (err) {
+                showModalError('Terjadi kesalahan, mohon coba lagi.');
+                btn.disabled = false;
+                btn.textContent = '✅ Konfirmasi Pendaftaran';
+            }
+        }
+
+        function toBase64(file) { return new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; }); }
+        function showFormError(msg) { const el = document.getElementById('form-error'); el.textContent = msg; el.style.display = 'block'; }
+        function showModalError(msg) { const el = document.getElementById('modal-error'); el.textContent = msg; el.style.display = 'block'; }
+    </script>
+</body>
+
+</html>
