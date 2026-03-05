@@ -502,6 +502,8 @@ function initEventsCarousel() {
 // ========== JOIN EVENT BUTTONS ==========
 document.querySelectorAll('.event-join-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
+        // If button is inside an <a> tag, let the link navigate naturally
+        if (btn.closest('a[href]')) return;
         e.stopPropagation();
         openModal(elements.modalEvent);
     });
